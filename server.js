@@ -69,7 +69,7 @@ function createNewAnimal(body, animalsArray) {
     return animal
 }
 
-app.get('/api/animals', (req, res) => {
+app.get('/', (req, res) => {
     let results = animals
     if (req.query) {
         results = filterByQuery(req.query, results)
