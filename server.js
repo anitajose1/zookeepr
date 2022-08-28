@@ -1,4 +1,5 @@
 const express = require('express')
+// Note: Heroku sets the environment variable PORT to 80
 const PORT = process.env.PORT || 3001
 const app = express()
 const {animals} = require('./data/animals.json')
@@ -41,6 +42,11 @@ function filterByQuery(query, animalsArray) {
     return filteredResults
 }
 
+function findById(id, animalsArray) {
+    const result = animalsArray.filter(animal => animal.id === id)[0]
+    return result
+}
+
 app.get('/api/animals', (req, res) => {
     let results = animals
     if (req.query) {
@@ -49,6 +55,17 @@ app.get('/api/animals', (req, res) => {
     res.json(results)
 })
 
+// Note: Param properties are determined by the value following ":" in the route
+app.get('/api/animals/:id', (req, res) => {
+    const result = findById(req.params.id, animals)
+    if (result) {
+        res.json(result)
+    } else {
+        res.send(404)
+    }
+})
+
+// it's okay to place this method at the top instead of here as long as 'app' is declared first
 app.listen(PORT, () => {
     console.log(`API server now on port ${PORT}!`);
 })
