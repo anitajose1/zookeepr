@@ -117,9 +117,14 @@ function validateAnimal(animal) {
         return false
     }
     return true
-}
+} 
 
-// it's okay to place this method at the top instead of here as long as 'app' is declared first
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/index.html'))
+})
+
+// this method should always be placed at the end, 
+// but okay to place this method at the top instead of here as long as 'app' is declared first
 app.listen(PORT, () => {
     console.log(`API server now on port ${PORT}!`);
 })
