@@ -6,10 +6,13 @@ const express = require('express')
 const PORT = process.env.PORT || 3001
 
 const app = express()
-// parse incoming string or array data
+// middleware to parse incoming string or array data
 app.use(express.urlencoded({ extended: true}))
-// parse incoming JSON data
+// middleware to parse incoming JSON data
 app.use(express.json())
+// middleware that instructs server to make 'public/' files static resources so that
+// front-end code can be accessed without requiring specific server endpoint.
+app.use(express.static('public'))
 
 const {animals} = require('./data/animals.json')
 const { json } = require('body-parser')
@@ -69,7 +72,24 @@ function createNewAnimal(body, animalsArray) {
     return animal
 }
 
-app.get('/', (req, res) => {
+function validateAnimal(animal) {
+    if (!animal.name || typeof animal.name !== 'string') {
+        return false
+    }
+    if (!animal.species || typeof animal.species !== 'string') {
+        return false
+    }
+    if (!animal.diet || typeof animal.diet !== 'string') {
+        return false
+    }
+    if (!animal.personalityTraits || !Array.isArray(animal.personalityTraits)) {
+        return false
+    }
+    return true
+} 
+
+
+app.get('/api/animals', (req, res) => {
     let results = animals
     if (req.query) {
         results = filterByQuery(req.query, results)
@@ -103,23 +123,23 @@ app.post('/api/animals', (req, res) => {
     }
 })
 
-function validateAnimal(animal) {
-    if (!animal.name || typeof animal.name !== 'string') {
-        return false
-    }
-    if (!animal.species || typeof animal.species !== 'string') {
-        return false
-    }
-    if (!animal.diet || typeof animal.diet !== 'string') {
-        return false
-    }
-    if (!animal.personalityTraits || !Array.isArray(animal.personalityTraits)) {
-        return false
-    }
-    return true
-} 
-
+// route to serve index.html page
 app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/index.html'))
+})
+
+// route to serve animals.html page
+app.get('/animals', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/animals.html'))
+})
+
+// route to serve zookeepers.html page
+app.get('/zookeepers', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/zookeepers.html'))
+})
+
+// wildcard route to catch an error request for a route that doesn't exist
+app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, './public/index.html'))
 })
 
