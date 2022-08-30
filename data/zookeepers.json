@@ -65,6 +65,12 @@
       "age": 30,
       "favoriteAnimal": "dog",
       "id": "10"
+    },
+    {
+      "name": "Allia",
+      "age": 27,
+      "favoriteAnimal": "cat",
+      "id": "11"
     }
   ]
 }

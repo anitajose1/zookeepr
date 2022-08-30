@@ -13,12 +13,12 @@ app.use(express.urlencoded({ extended: true}))
 // middleware to parse incoming JSON data
 app.use(express.json())
 
-app.use('/api', apiRoutes)
-app.use('./', htmlRoutes)
-
 // middleware that instructs server to make 'public/' files static resources so that
 // front-end code can be accessed without requiring specific server endpoint.
 app.use(express.static('public'))
+
+app.use('/api', apiRoutes)
+app.use('/', htmlRoutes)
 
 const {animals} = require('./data/animals.json')
 const { json } = require('body-parser')
